@@ -2,7 +2,9 @@
 
 import scrapy
 
+
 class ChurchillQuotesSpider(scrapy.Spider):
+
     name = "citations de Churchill"
     start_urls = ["http://evene.lefigaro.fr/citations/winston-churchill",]
 
@@ -11,8 +13,6 @@ class ChurchillQuotesSpider(scrapy.Spider):
         # print(dir(response))
         # print(response.text)
         for cit in response.xpath('//div[@class="figsco__quote__text"]'):
-            # print('###', cit)
+            print('###', cit)
             text_value = cit.xpath('a/text()').extract_first().replace('“', '').replace('”', '')
-            yield { 'text' : text_value }
-
-            
+            yield {'text': text_value}
