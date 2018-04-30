@@ -12,4 +12,3 @@ Inside the templates folder:
 - base.html is the base template for all pages of the web application
 - index.html defines the homepage
 
-w

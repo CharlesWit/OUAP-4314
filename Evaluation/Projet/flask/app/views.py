@@ -1,6 +1,6 @@
 from flask import render_template, request, redirect, flash
 
-from .forms import POIForm, Search
+from .forms import Search
 
 from app import app
 from pymongo import MongoClient
@@ -8,7 +8,7 @@ from pymongo import MongoClient
 
 client = MongoClient()
 db = client.OUAP
-db.musees.ensure_index([("appellation", "text"), ("adresse", "text"), ("bus", "text"), ("velib", "text")],
+db.musees.create_index([("appellation", "text"), ("adresse", "text"), ("bus", "text"), ("velib", "text")],
                        name="search_index")
 db.jardins.ensure_index([("appellation", "text"), ("adresse", "text"), ("bus", "text"), ("velib", "text")],
                         name="search_index")
@@ -91,8 +91,10 @@ def index():
 @app.route('/results')
 def search_results(query):
 
+    if query is None :
+        query = ''
     # query = request.form['q']
-    text_results = db.Runcommand('text', search=str(query), limit=None)
+    text_results = db.musees.find_one({'$text': {'$search': str(query)}})
     doc_matches = (res['obj'] for res in text_results['results'])
 
     if not doc_matches:

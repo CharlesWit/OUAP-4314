@@ -1,10 +1,7 @@
 {#
 
-The main page of the search engine.
-
-The forms are produced with a Jinja macro written in the macros.html template file.
-The form inputs for each form are first specified in a list variable declared in the Jinja.
-Then it is fed to the Jinja macro.
+La page principale de l'application.
+Les formulaires sont créés à partir de macros Jinja, écritent dans le fichier de template macros.html
 
 #}
 
@@ -23,8 +20,6 @@ Then it is fed to the Jinja macro.
 
     <div class="row">
 
-        <div class="col l4 s12">
-
             {% with messages = get_flashed_messages() %}
                 {% if messages %}
                 <ul class=flashes>
@@ -37,14 +32,11 @@ Then it is fed to the Jinja macro.
 
             {% from "macros.html" import render_field %}
             <form method=post>
-              <dl>
                 {{ render_field(form.select) }}
                 <p>
                 {{ render_field(form.search) }}
-              </dl>
               <p><input type=submit value=Search>
             </form>
-        </div>
 
     </div>    
 
