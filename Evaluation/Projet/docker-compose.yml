@@ -8,7 +8,7 @@ services:
 
   flask:
     build:
-      context: ./flask_bdgest/
+      context: ./flask/
       dockerfile: Dockerfile
     image: flask_image
     container_name: flask_container
@@ -17,13 +17,13 @@ services:
     links: 
       - mongo
     volumes:
-      - "$PWD/flask_bdgest:/home/flask"
+      - "$PWD/flask:/home/flask"
 
-  scrapy:
+  soup:
     build:
-      context: ./scrapy_bdgest/
+      context: ./soup/
       dockerfile: Dockerfile
-    image: scrapy_image
-    container_name: scrapy_container
+    image: soup_image
+    container_name: soup_container
     links: 
       - mongo

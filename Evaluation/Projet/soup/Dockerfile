@@ -6,4 +6,5 @@ WORKDIR /home/soup/
 COPY . .
 RUN pip install --no-cache-dir -r requirements.txt
 
-RUN pyhon AddDatabase.py
+ENTRYPOINT ["python"]
+CMD ["AddDatabase.py"]

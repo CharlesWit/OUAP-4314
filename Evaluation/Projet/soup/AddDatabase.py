@@ -7,7 +7,8 @@ headers_musees = {
     'Origin': 'https://meslieux.paris.fr',
     'Accept-Encoding': 'gzip, deflate, br',
     'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/'
+                  '65.0.3325.181 Safari/537.36',
     'Accept': 'application/json, text/plain, /',
     'Referer': 'https://meslieux.paris.fr/musees-municipaux',
     'Connection': 'keep-alive',
@@ -26,7 +27,8 @@ headers_jardins = {
     'Origin': 'https://meslieux.paris.fr',
     'Accept-Encoding': 'gzip, deflate, br',
     'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/'
+                  '65.0.3325.181 Safari/537.36',
     'Accept': 'application/json, text/plain, /',
     'Referer': 'https://meslieux.paris.fr/principaux-parcs-et-jardins',
     'Connection': 'keep-alive',
@@ -36,8 +38,10 @@ headers_jardins = {
 
 t = str.maketrans("äâàéèëêïîöôüûù'","aaaeeeeiioouuu ")
 
-response_musees = requests.post('https://meslieux.paris.fr/proxy/data/get/equipements/get_equipements', headers=headers_musees, params=params)
-response_jardins = requests.post('https://meslieux.paris.fr/proxy/data/get/equipements/get_equipements', headers=headers_jardins, params=params)
+response_musees = requests.post('https://meslieux.paris.fr/proxy/data/get/equipements/get_equipements',
+                                headers=headers_musees, params=params)
+response_jardins = requests.post('https://meslieux.paris.fr/proxy/data/get/equipements/get_equipements',
+                                 headers=headers_jardins, params=params)
 
 
 client = MongoClient()
@@ -45,7 +49,10 @@ database = client.OUAP
 musees = database.musees
 jardins = database.jardins
 
-REGFUL = r"(\d{1,3})?(\s|,)*(b[is]*|t[er]*)?\s*(avenue|arcade|boulevard|cite|cours|chemin|carrefour|rue|ruelle|route|square|parc|parvis|pont|promenade|port|faubourg|passage|hameau|gal|galerie|voie|chaussee|peristyle|esplanade|allee|impasse|place|villa|quai)\s((d.{1,2}\s|d')?\s?(l.{1,2}\s|l')?\s?(\b\w+\s?|\.?){1,5})"
+
+REGFUL = r"(\d{1,3})?(\s|,)*(b[is]*|t[er]*)?\s*(avenue|arcade|boulevard|cite|cours|chemin|carrefour|rue|ruelle|" \
+         r"route|square|parc|parvis|pont|promenade|port|faubourg|passage|hameau|gal|galerie|voie|chaussee|peristyle" \
+         r"|esplanade|allee|impasse|place|villa|quai)\s((d.{1,2}\s|d')?\s?(l.{1,2}\s|l')?\s?(\b\w+\s?|\.?){1,5})"
 
 def ajoute_adresse(elem_json):
     """
@@ -145,7 +152,7 @@ def scrap(response_json, collection):
         ad_dict = ajoute_adresse(elem)
         h_dict = ajoute_horaires(elem)
         
-        url = "http://equipement.paris.fr/" + elem['name'].lower().translate(t).replace(" ","-") + "-"+ elem['idequipement']
+        url = "http://equipement.paris.fr/" + elem['name'].lower().translate(t).replace(" ", "-") + "-" + elem['idequipement']
         response = requests.get(url)
         soup = BeautifulSoup(response.text, "lxml")
 
@@ -153,7 +160,7 @@ def scrap(response_json, collection):
         velib = ajoute_velib(soup)
         bus = ajoute_bus(soup)
 
-        collection.insert( {"appelation": elem['name'], 
+        collection.insert( {"appellation": elem['name'],
                             "adresse": ad_dict, 
                             "loc": loc_dict, 
                             "bus": bus,
@@ -165,8 +172,10 @@ def add_database():
     """
     Fonction qui ajoute tous les elements à la database (jardins et musees municipaux)
     """
-    response_musees = requests.post('https://meslieux.paris.fr/proxy/data/get/equipements/get_equipements', headers=headers_musees, params=params)
-    response_jardins = requests.post('https://meslieux.paris.fr/proxy/data/get/equipements/get_equipements', headers=headers_jardins, params=params)
+    response_musees = requests.post('https://meslieux.paris.fr/proxy/data/get/equipements/get_equipements',
+                                    headers=headers_musees, params=params)
+    response_jardins = requests.post('https://meslieux.paris.fr/proxy/data/get/equipements/get_equipements',
+                                     headers=headers_jardins, params=params)
 
     scrap(response_musees.json(), musees)
     scrap(response_jardins.json(), jardins)

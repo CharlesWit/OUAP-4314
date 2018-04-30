@@ -58,42 +58,29 @@ Exemple : http://equipement.paris.fr/musee-cognacq-jay-1519, http://equipement.p
 Ressources externes : on pourra utiliser https://adresse.data.gouv.fr/api pour le geocoding
 
 =========================
-How to launch the project
+Lancer le projet
 =========================
 
-You may first need to pull the Docker image for MongoDB from dockerhub:
+Avant tout, assurez-vous d'avoir récupéré l'image Docker pour MongoDB depuis le dockerhub :
 
 .. code-block:: bash
 
     docker pull mongo
 
-Navigate to OUAP-4314/Evaluation/Projet and start the containers:
+Placez-vous dans le dossier OUAP-4314/Evaluation/Projet, puis lancer les containers :
 
 .. code-block:: bash
 
     docker-compose up
 
-You can also start the containers in detached mode and check their logs in real time:
-
-.. code-block:: bash
-
-    docker-compose up -d
-    docker-compose logs -f
-
-Check if the containers are up:
+Si les containers ont bien été lancés, vous devriez les voir listés à l'exécution de cette commande :
 
 .. code-block:: bash
 
     docker-compose ps
 
-Gracefully shut the containers down:
+Pour arrêter les containers sans risques, utilisez la commande suivante :
 
 .. code-block:: bash
 
     docker-compose down
-
-Deploy the project on macOS:
-
-.. code-block:: bash
-
-    docker-compose -f mac_docker-compose.yml up
