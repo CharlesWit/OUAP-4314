@@ -7,8 +7,7 @@ headers_musees = {
     'Origin': 'https://meslieux.paris.fr',
     'Accept-Encoding': 'gzip, deflate, br',
     'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/'
-                  '65.0.3325.181 Safari/537.36',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36',
     'Accept': 'application/json, text/plain, /',
     'Referer': 'https://meslieux.paris.fr/musees-municipaux',
     'Connection': 'keep-alive',
@@ -27,8 +26,7 @@ headers_jardins = {
     'Origin': 'https://meslieux.paris.fr',
     'Accept-Encoding': 'gzip, deflate, br',
     'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/'
-                  '65.0.3325.181 Safari/537.36',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36',
     'Accept': 'application/json, text/plain, /',
     'Referer': 'https://meslieux.paris.fr/principaux-parcs-et-jardins',
     'Connection': 'keep-alive',
@@ -38,21 +36,16 @@ headers_jardins = {
 
 t = str.maketrans("äâàéèëêïîöôüûù'","aaaeeeeiioouuu ")
 
-response_musees = requests.post('https://meslieux.paris.fr/proxy/data/get/equipements/get_equipements',
-                                headers=headers_musees, params=params)
-response_jardins = requests.post('https://meslieux.paris.fr/proxy/data/get/equipements/get_equipements',
-                                 headers=headers_jardins, params=params)
-
-
 client = MongoClient()
 database = client.OUAP
+print(client.database_names())
 musees = database.musees
 jardins = database.jardins
 
-
 REGFUL = r"(\d{1,3})?(\s|,)*(b[is]*|t[er]*)?\s*(avenue|arcade|boulevard|cite|cours|chemin|carrefour|rue|ruelle|" \
-         r"route|square|parc|parvis|pont|promenade|port|faubourg|passage|hameau|gal|galerie|voie|chaussee|peristyle" \
-         r"|esplanade|allee|impasse|place|villa|quai)\s((d.{1,2}\s|d')?\s?(l.{1,2}\s|l')?\s?(\b\w+\s?|\.?){1,5})"
+         r"route|square|parc|parvis|pont|promenade|port|faubourg|passage|hameau|gal|galerie|voie|chaussee|peristyle|" \
+         r"esplanade|allee|impasse|place|villa|quai)\s((d.{1,2}\s|d')?\s?(l.{1,2}\s|l')?\s?(\b\w+\s?|\.?){1,5})"
+
 
 def ajoute_adresse(elem_json):
     """
@@ -79,6 +72,7 @@ def ajoute_adresse(elem_json):
 
     return ad_dict
 
+
 def ajoute_horaires(elem_json):
     """
     Fonction renvoyant un dictionnaire contenant les elements d'une adresse
@@ -99,13 +93,15 @@ def ajoute_horaires(elem_json):
 
     return h_dict
 
+
 def ajoute_infos(elem_soup):
     """
-    Fonction qui renvoie les informations du lieu
+    Fonction qui renvoi les informations du lieu
     """
     info_html = elem_soup.find("div", attrs={"itemprop":"description"})
     return info_html.text.strip()
-    
+
+
 def ajoute_velib(elem_soup):
     """
     Args:
@@ -122,6 +118,7 @@ def ajoute_velib(elem_soup):
                 v_dict[elem[0]] = elem[1]
     
     return v_dict
+
 
 def ajoute_bus(elem_soup):
     """
@@ -140,13 +137,16 @@ def ajoute_bus(elem_soup):
     
     return list_
 
-def scrap(response_json, collection):
+
+def scrap(response_json):
     """
     Fonction qui ajoute les informations contenues dans response_json dans collection
     Args:
         response_json: le json de la page scrappée
-        collection: la collection Mongo à alimenter
+    Returns:
+        list: une liste des documents à insérer
     """
+    list_ = []
     for elem in response_json:
         loc_dict = {"lat": elem['lat'], "lon": elem['lon']}
         ad_dict = ajoute_adresse(elem)
@@ -160,24 +160,26 @@ def scrap(response_json, collection):
         velib = ajoute_velib(soup)
         bus = ajoute_bus(soup)
 
-        collection.insert( {"appellation": elem['name'],
-                            "adresse": ad_dict, 
+        list_.append({"appelation": elem['name'], 
+                            "adresse": ad_dict,
                             "loc": loc_dict, 
                             "bus": bus,
                             "velib": velib, 
-                            "infos": infos , 
+                            "infos": infos,
                             "horaires": h_dict})
+        print(list_)
+        
+    return list_
 
 def add_database():
     """
     Fonction qui ajoute tous les elements à la database (jardins et musees municipaux)
     """
-    response_musees = requests.post('https://meslieux.paris.fr/proxy/data/get/equipements/get_equipements',
-                                    headers=headers_musees, params=params)
-    response_jardins = requests.post('https://meslieux.paris.fr/proxy/data/get/equipements/get_equipements',
-                                     headers=headers_jardins, params=params)
+    response_musees = requests.post('https://meslieux.paris.fr/proxy/data/get/equipements/get_equipements', headers=headers_musees, params=params)
+    response_jardins = requests.post('https://meslieux.paris.fr/proxy/data/get/equipements/get_equipements', headers=headers_jardins, params=params)
 
-    scrap(response_musees.json(), musees)
-    scrap(response_jardins.json(), jardins)
+    musees.insert(scrap(response_musees.json()))
+    jardins.insert(scrap(response_jardins.json()))
 
 add_database()
+

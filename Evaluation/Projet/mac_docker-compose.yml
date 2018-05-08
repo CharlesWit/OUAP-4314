@@ -14,16 +14,17 @@ services:
     container_name: flask_container
     ports:
       - "8000:8000"
-    links: 
-      - mongo
     volumes:
       - "$PWD/flask:/home/flask"
-
+    links: 
+      - mongo
   soup:
     build:
       context: ./soup/
       dockerfile: Dockerfile
     image: soup_image
     container_name: soup_container
+    volumes:
+      - "$PWD/soup:/home/soup"
     links: 
       - mongo
