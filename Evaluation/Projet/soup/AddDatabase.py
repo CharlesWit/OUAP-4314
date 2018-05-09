@@ -38,7 +38,7 @@ t = str.maketrans("äâàéèëêïîöôüûù'","aaaeeeeiioouuu ")
 
 client = MongoClient()
 database = client.OUAP
-print(client.database_names())
+# print(client.database_names())
 musees = database.musees
 jardins = database.jardins
 
@@ -167,7 +167,7 @@ def scrap(response_json):
                             "velib": velib, 
                             "infos": infos,
                             "horaires": h_dict})
-        print(list_)
+        # print(list_)
         
     return list_
 

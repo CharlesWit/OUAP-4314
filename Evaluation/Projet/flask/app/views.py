@@ -1,9 +1,10 @@
-from flask import render_template, request, redirect, flash
-
+from flask import render_template, request, redirect, flash, jsonify, Response, json
+import json
 from .forms import Search
-
 from app import app
+from bson.json_util import dumps as dp
 from pymongo import MongoClient
+
 
 
 client = MongoClient()
@@ -29,8 +30,26 @@ def poi_by_name(appellation):
     return adresse
 
 
+# @app.route('/musees', methods=['GET', 'POST'])
+# def musees():
+#     """
+#     La route pour la page d'accueil.
+#
+#     Returns:
+#         render_template: le template index.html qui contient le formulaire de recherche
+#     """
+#
+#     results = db.musees.find()
+#     # response = Response(
+#     #     response=json.dumps(results),
+#     #     status=200,
+#     #     mimetype='application/json'
+#     # )
+#     # results = json.dumps([e.toJSON() for e in results])
+#     return dp(results)
+
 @app.route('/', methods=['GET', 'POST'])
-def index():
+def musees():
     """
     La route pour la page d'accueil.
 
@@ -38,25 +57,31 @@ def index():
         render_template: le template index.html qui contient le formulaire de recherche
     """
 
-    search = Search()
-    if request.method == 'POST':
-        return search_results(search)
-    return render_template('index.html', form=search)
+    results = db.musees.find()
+    res = dp(results)
+    res = jsonify(res)
+    # response = Response(
+    #     response=json.dumps(results),
+    #     status=200,
+    #     mimetype='application/json'
+    # )
+    # results = json.dumps([e.toJSON() for e in results])
+    return res
 
-
-@app.route('/results', methods =['GET', 'POST'])
-def search_results(query):
-
-    if query is None :
-        query = ''
-    # query = request.form['q']
-    text_results = db.musees.find_one({'$text': {'$search': str(query)}})
-    doc_matches = (res['obj'] for res in text_results['results'])
-
-    if not doc_matches:
-        flash('No results found!')
-        return redirect('/')
-    else:
-        # display results
-        return render_template('results.html', results=doc_matches)
-
+#
+# @app.route('/results', methods =['GET', 'POST'])
+# def search_results(query):
+#
+#     if query is None :
+#         query = ''
+#     # query = request.form['q']
+#     text_results = db.musees.find_one({'$text': {'$search': str(query)}})
+#     doc_matches = (res['obj'] for res in text_results['results'])
+#
+#     if not doc_matches:
+#         flash('No results found!')
+#         return redirect('/')
+#     else:
+#         # display results
+#         return render_template('results.html', results=doc_matches)
+#
