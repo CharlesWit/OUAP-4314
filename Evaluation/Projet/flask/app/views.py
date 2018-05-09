@@ -1,10 +1,10 @@
+# -*- coding: utf-8 -*-
+
 from flask import render_template, request, redirect, flash, jsonify, Response, json
-import json
-from .forms import Search
+# from .forms import Search
 from app import app
 from bson.json_util import dumps as dp
 from pymongo import MongoClient
-
 
 
 client = MongoClient()
@@ -50,6 +50,7 @@ def jardins():
     # results = json.dumps([e.toJSON() for e in results])
     return res
 
+
 @app.route('/musees', methods=['GET', 'POST'])
 def musees():
     """
@@ -67,7 +68,6 @@ def musees():
     #     status=200,
     #     mimetype='application/json'
     # )
-    # results = json.dumps([e.toJSON() for e in results])
     return res
 
 #

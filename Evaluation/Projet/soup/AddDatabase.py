@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import requests
 from pymongo import MongoClient
 from bs4 import BeautifulSoup 
