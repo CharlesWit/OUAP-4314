@@ -30,25 +30,27 @@ def poi_by_name(appellation):
     return adresse
 
 
-# @app.route('/musees', methods=['GET', 'POST'])
-# def musees():
-#     """
-#     La route pour la page d'accueil.
-#
-#     Returns:
-#         render_template: le template index.html qui contient le formulaire de recherche
-#     """
-#
-#     results = db.musees.find()
-#     # response = Response(
-#     #     response=json.dumps(results),
-#     #     status=200,
-#     #     mimetype='application/json'
-#     # )
-#     # results = json.dumps([e.toJSON() for e in results])
-#     return dp(results)
+@app.route('/jardins', methods=['GET', 'POST'])
+def jardins():
+    """
+    La route pour la page d'accueil.
 
-@app.route('/', methods=['GET', 'POST'])
+    Returns:
+        render_template: le template index.html qui contient le formulaire de recherche
+    """
+
+    results = db.jardins.find()
+    res = dp(results)
+    res = jsonify(res)
+    # response = Response(
+    #     response=json.dumps(results),
+    #     status=200,
+    #     mimetype='application/json'
+    # )
+    # results = json.dumps([e.toJSON() for e in results])
+    return res
+
+@app.route('/musees', methods=['GET', 'POST'])
 def musees():
     """
     La route pour la page d'accueil.
