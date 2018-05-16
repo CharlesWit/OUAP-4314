@@ -9,10 +9,10 @@ from pymongo import MongoClient
 
 client = MongoClient()
 db = client.OUAP
-db.musees.create_index([("appellation", "text"), ("adresse", "text"), ("bus", "text"), ("velib", "text")],
-                       name="search_index")
-db.jardins.ensure_index([("appellation", "text"), ("adresse", "text"), ("bus", "text"), ("velib", "text")],
-                        name="search_index")
+# db.musees.create_index([("appellation", "text"), ("adresse", "text"), ("bus", "text"), ("velib", "text")],
+#     )
+# db.jardins.ensure_index([("appellation", "text"), ("adresse", "text"), ("bus", "text"), ("velib", "text")],
+#                         name="search_index")
 
 
 def poi_by_name(appellation):
@@ -69,6 +69,20 @@ def musees():
     #     mimetype='application/json'
     # )
     return res
+
+
+# @app.route("/search", methods=['GET'])
+# def search():
+# 	#Rechercher une annonce : redirige vers la page de recherche
+#
+# 	key=request.values.get("key")
+# 	refer=request.values.get("refer")
+# 	if(key=="_id"):
+# 		posts_l = posts.find({refer:ObjectId(key)})
+# 	else:
+# 		posts_l = posts.find({refer:key})
+# 	return render_template('searchlist.html',posts=posts_l,t=title,h=heading)
+
 
 #
 # @app.route('/results', methods =['GET', 'POST'])

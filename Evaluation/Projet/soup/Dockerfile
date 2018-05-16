@@ -4,7 +4,6 @@ RUN mkdir /home/soup/
 WORKDIR /home/soup/
 
 COPY . .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt
 
-ENTRYPOINT ["python"]
-CMD ["AddDatabase.py"]
+CMD ["python3", "AddDatabase.py"]

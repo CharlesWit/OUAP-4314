@@ -36,13 +36,13 @@ headers_jardins = {
 }
 
 
-t = str.maketrans("äâàéèëêïîöôüûù'","aaaeeeeiioouuu ")
+t = str.maketrans("äâàéèëêïîöôüûù'", "aaaeeeeiioouuu ")
 
 client = MongoClient()
+client.drop_database('OUAP')
 database = client.OUAP
-# print(client.database_names())
-musees = database.musees
-jardins = database.jardins
+# musees = database.musees
+# jardins = database.jardins
 
 REGFUL = r"(\d{1,3})?(\s|,)*(b[is]*|t[er]*)?\s*(avenue|arcade|boulevard|cite|cours|chemin|carrefour|rue|ruelle|" \
          r"route|square|parc|parvis|pont|promenade|port|faubourg|passage|hameau|gal|galerie|voie|chaussee|peristyle|" \
@@ -58,12 +58,14 @@ def ajoute_adresse(elem_json):
         dict: un dictionnaire contenant les elements de l'adresse contenue dans le json
     """
     adresse = elem_json['address']
-    adresse = adresse.lower().translate(t).replace("-", " ").replace("\ ","'")
+    adresse = adresse.lower().translate(t).replace("-", " ").replace("\ ", "'")
     reg = re.findall(REGFUL, adresse)
     ad_dict = {}
     for i in reg:
         if i[0]:
             ad_dict["numero"] = i[0]
+        elif not i[0]:
+            ad_dict["numero"] = ""
         if i[3]:
             ad_dict["voie"] = i[3]
         if i[4]:
@@ -100,7 +102,7 @@ def ajoute_infos(elem_soup):
     """
     Fonction qui renvoi les informations du lieu
     """
-    info_html = elem_soup.find("div", attrs={"itemprop":"description"})
+    info_html = elem_soup.find("div", attrs={"itemprop": "description"})
     return info_html.text.strip()
 
 
@@ -162,16 +164,16 @@ def scrap(response_json):
         velib = ajoute_velib(soup)
         bus = ajoute_bus(soup)
 
-        list_.append({"appelation": elem['name'], 
-                            "adresse": ad_dict,
-                            "loc": loc_dict, 
-                            "bus": bus,
-                            "velib": velib, 
-                            "infos": infos,
-                            "horaires": h_dict})
-        # print(list_)
-        
+        list_.append({"appellation": elem['name'],
+                      "adresses": ad_dict,
+                      "locs": loc_dict,
+                      "buss": bus,
+                      "velibs": velib,
+                      "infos": infos,
+                      "horaires": h_dict})
+
     return list_
+
 
 def add_database():
     """
@@ -180,8 +182,9 @@ def add_database():
     response_musees = requests.post('https://meslieux.paris.fr/proxy/data/get/equipements/get_equipements', headers=headers_musees, params=params)
     response_jardins = requests.post('https://meslieux.paris.fr/proxy/data/get/equipements/get_equipements', headers=headers_jardins, params=params)
 
-    musees.insert(scrap(response_musees.json()))
-    jardins.insert(scrap(response_jardins.json()))
+    database.musees.insert(scrap(response_musees.json()))
+    database.jardins.insert(scrap(response_jardins.json()))
+
 
 add_database()
 

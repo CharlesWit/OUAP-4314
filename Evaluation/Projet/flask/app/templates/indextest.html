@@ -1,0 +1,47 @@
+{#
+
+La page principale de l'application.
+Les formulaires sont créés à partir de macros Jinja, écritent dans le fichier de template macros.html
+
+#}
+
+{% from "macros.html" import render_form %}
+
+{% extends "base.html" %}
+
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row center"><h2 class="green-text"></h2></div>
+
+    <div class="row">
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <ul class=flashes>
+                    {% for message in messages %}
+                    <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            {% endwith %}
+
+            {% from "macros.html" import render_field %}
+            <form method=post>
+                {{ render_field(form.select) }}
+                <p>
+                {{ render_field(form.search) }}
+              <p><input type=submit value=Search>
+            </form>
+
+    </div>    
+
+</div>
+
+{% endblock %}
+
+
