@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from flask import render_template, request, redirect, flash, jsonify, Response, json
-# from .forms import Search
 from app import app
 from bson.json_util import dumps as dp
 from pymongo import MongoClient
@@ -36,7 +35,7 @@ def jardins():
     La route pour la page d'accueil.
 
     Returns:
-        render_template: le template index.html qui contient le formulaire de recherche
+        render_template: le template musées.html qui définit la page d'accueil musées
     """
 
     results = db.jardins.find()
@@ -57,31 +56,37 @@ def musees():
     La route pour la page d'accueil.
 
     Returns:
-        render_template: le template index.html qui contient le formulaire de recherche
+        render_template: le template musees.html qui définit la page d'accueil musées
     """
 
-    results = db.musees.find()
-    res = dp(results)
-    res = jsonify(res)
-    # response = Response(
-    #     response=json.dumps(results),
-    #     status=200,
-    #     mimetype='application/json'
-    # )
-    return res
+    data_m = db.musees.find()
+    a1 = "active"
+    return render_template('musees.html', a1=a1, musees=data_m, t='Musées', h='Base des musées et lieux culturels')
+
+
+    # results = db.musees.find()
+    # res = dp(results)
+    # res = jsonify(res)
+    # # response = Response(
+    # #     response=json.dumps(results),
+    # #     status=200,
+    # #     mimetype='application/json'
+    # # )
+    # return res
 
 
 # @app.route("/search", methods=['GET'])
 # def search():
-# 	#Rechercher une annonce : redirige vers la page de recherche
 #
-# 	key=request.values.get("key")
-# 	refer=request.values.get("refer")
-# 	if(key=="_id"):
-# 		posts_l = posts.find({refer:ObjectId(key)})
-# 	else:
-# 		posts_l = posts.find({refer:key})
-# 	return render_template('searchlist.html',posts=posts_l,t=title,h=heading)
+#     # Rechercher une annonce : redirige vers la page de recherche
+#
+#     key = request.values.get("key")
+#     refer = request.values.get("refer")
+#     if key == "_id":
+#         posts_l = musees.find({refer:ObjectId(key)})
+#     else:
+#         posts_l = musees.find({refer:key})
+#     return render_template('search.html', posts=posts_l, t=title, h=heading)
 
 
 #

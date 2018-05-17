@@ -1,6 +1,7 @@
 h1{
-/*	font-family:"Arial Black", Gadget, sans-serif;*/
-	font-family:"Times New Romans", Gadget, sans-serif;
+/*	font-family:"Arial Black", Gadget, sans-serif;
+	font-family:"Times New Romans", Gadget, sans-serif;*/
+	font-family: sans-serif;
 }
 body{
 	color:black;
@@ -16,7 +17,7 @@ table{
 td
 {
 	border: rgba(224, 119, 70, 1) 2px solid;
-	word-wrap:break-word;
+	/*word-wrap:break-word;*/
 }
 table#close{
 
@@ -39,7 +40,7 @@ tr.row td{
 	text-decoration:italic;
 }
 th.status{
-	width:5%;
+	/*width:5%;*/
 }
 th.name{
 	width:20%;
