@@ -61,6 +61,30 @@ Ressources externes : on pourra utiliser https://adresse.data.gouv.fr/api pour l
 Lancer le projet
 =========================
 
+**TEMPORAIRE**
+
+Lancer un serveur mongodb :
+
+.. code-block:: bash
+
+    mongod -dbpath ~/data/
+
+Dans une nouvelle fenêtre de terminal, se placer dans le dossier OUAP-4314/Evaluation/Projet, puis taper les commandes qui suivent :
+
+.. code-block:: bash
+
+    python3 ./soup/AddDatabase.py
+
+et dans une (encore) nouvelle fenêtre :
+
+.. code-block:: bahs
+
+    python3 ./flask/run.py
+
+Dans un navigateur web, accéder à la base des musées via l'url http://localhost:5000/musees, et à celle des jardins via http://localhost:5000/jardins
+
+=========================
+
 Avant tout, assurez-vous d'avoir récupéré l'image Docker pour MongoDB depuis le dockerhub :
 
 .. code-block:: bash

@@ -2,11 +2,11 @@
 
 from flask import render_template, request, redirect, flash, jsonify, Response, json
 from app import app
-from bson.json_util import dumps as dp
+# from bson.json_util import dumps as dp
 from pymongo import MongoClient
 
 
-client = MongoClient()
+client = MongoClient('localhost', 27017)
 db = client.OUAP
 # db.musees.create_index([("appellation", "text"), ("adresse", "text"), ("bus", "text"), ("velib", "text")],
 #     )
@@ -35,19 +35,12 @@ def jardins():
     La route pour la page d'accueil.
 
     Returns:
-        render_template: le template musées.html qui définit la page d'accueil musées
+        render_template: le template jardins.html qui définit la page d'accueil jardins
     """
 
-    results = db.jardins.find()
-    res = dp(results)
-    res = jsonify(res)
-    # response = Response(
-    #     response=json.dumps(results),
-    #     status=200,
-    #     mimetype='application/json'
-    # )
-    # results = json.dumps([e.toJSON() for e in results])
-    return res
+    data_m = db.jardins.find()
+    a1 = "active"
+    return render_template('jardins.html', a1=a1, jardins=data_m, t='Jardins', h='Base des jardins et parcs parisiens')
 
 
 @app.route('/musees', methods=['GET', 'POST'])
@@ -61,7 +54,7 @@ def musees():
 
     data_m = db.musees.find()
     a1 = "active"
-    return render_template('musees.html', a1=a1, musees=data_m, t='Musées', h='Base des musées et lieux culturels')
+    return render_template('musees.html', a1=a1, musees=data_m, t='Musées', h='Base des musées et lieux culturels parisiens')
 
 
     # results = db.musees.find()

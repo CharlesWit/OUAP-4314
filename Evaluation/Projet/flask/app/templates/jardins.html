@@ -1,0 +1,76 @@
+<html>
+	<head>
+		<title>{{t}}</title>
+		<link rel="stylesheet" type="text/css"  href="{{ url_for('static', filename='css/materialize.css')}}" >
+
+	</head>
+<body>
+    <nav>
+    <div class="nav-wrapper green darken-2">
+      <a href="#">{{h}}</a>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li><a href="/">All</a></li>
+        <li><a  href="/about">Source</a></li>
+      </ul>
+    </div>
+  </nav>
+  <br>
+	<!--<h1>{{ h }}</h1>-->
+    <!--<a href="/" class="{{ a1 }} waves-effect waves-light btn">All</a>-->
+    <!--<div style="float:right"><a class = "waves-effect waves-light btn" href="/about">Source</a></div>-->
+
+	<!--RECHERCHE-->
+
+    <!--{% if jardins[0] %}-->
+	<!--<div span="right">-->
+	<!--<form action="/search"	method="GET" >-->
+		<!--<table class="none" id="close">-->
+		<!--<tr>-->
+		<!--<td></td><td></td>-->
+		<!--&lt;!&ndash;<td><big><b>Recherche:</b></big></td>&ndash;&gt;-->
+		<!--<td><select class="input-field" name="refer" required>-->
+    		<!--<option value="name">Nom</option>-->
+			<!--<option value="address">Adresse</option>-->
+		<!--</select></td>-->
+		<!--<td><input type="text" name="key" placeholder="Recherche" size="15" /></td>-->
+		<!--<td><button class="waves-effect waves-light green darken-2 btn" type="submit">Rechercher</button></td>-->
+		<!--</tr>-->
+		<!--</table>-->
+	<!--</form>-->
+	<!--</div>-->
+
+	<b><big>Jardins et Parcs:</big></b>
+    <br>
+	<table class="striped responsive ">
+	    <tr id="row">
+            <th class="name">Appellation</th>
+    	    <th class="address">Adresse</th>
+	    	<th class="loc">Localisation</th>
+	    	<th class="bus">Bus</th>
+	    	<th class="vel">Vélib</th>
+	    	<th class="inf">Informations</th>
+	    	<th class="hor">Horaires</th>
+	    </tr>
+	{% for e in jardins %}
+		<tr class="datas">
+    		<td class="name">{{ e["appellation"]}}</td>
+			<td class="address">{{ e["adresses"]["numero"] +' '+ e["adresses"]["voie"] +' '+  e["adresses"]["nom_voie"]
+                +' '+ e["adresses"]["ville"] +' '+ e["adresses"]["code_postal"]}}</td>
+			<td class="loc">{{ e["locs"] }}</td>
+			<td class="bus">{{ e["buss"] }}</td>
+			<td class="vel">{{ e["velibs"] }}</td>
+			<td class="inf">{{ e["infos"] }}</td>
+            <td class="hor">{{ e["horaires"] }}</td>
+		</tr>
+	{% endfor %}
+	</table>
+	{% else %}
+		<h4>Aucune donnée !</h4>
+	{% endif %}
+	<hr/>
+	<form action="/action" method="POST">
+	</form>
+	<script>
+	</script>
+</body>
+</html>

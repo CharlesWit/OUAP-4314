@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import requests
-from pymongo import MongoClient
-from bs4 import BeautifulSoup 
+import pymongo
+from bs4 import BeautifulSoup
 import re
 
 headers_musees = {
@@ -38,11 +38,11 @@ headers_jardins = {
 
 t = str.maketrans("äâàéèëêïîöôüûù'", "aaaeeeeiioouuu ")
 
-client = MongoClient()
+client = pymongo.MongoClient('localhost', 27017)
 client.drop_database('OUAP')
 database = client.OUAP
-# musees = database.musees
-# jardins = database.jardins
+musees = database.musees
+jardins = database.jardins
 
 REGFUL = r"(\d{1,3})?(\s|,)*(b[is]*|t[er]*)?\s*(avenue|arcade|boulevard|cite|cours|chemin|carrefour|rue|ruelle|" \
          r"route|square|parc|parvis|pont|promenade|port|faubourg|passage|hameau|gal|galerie|voie|chaussee|peristyle|" \
@@ -58,8 +58,8 @@ def ajoute_adresse(elem_json):
         dict: un dictionnaire contenant les elements de l'adresse contenue dans le json
     """
     adresse = elem_json['address']
-    adresse = adresse.lower().translate(t).replace("-", " ").replace("\ ", "'")
-    reg = re.findall(REGFUL, adresse)
+    adresse = adresse.translate(t).replace("-", " ").replace("\ ", "'")
+    reg = re.findall(REGFUL, adresse, re.IGNORECASE)
     ad_dict = {}
     for i in reg:
         if i[0]:
@@ -131,9 +131,9 @@ def ajoute_bus(elem_soup):
     Returns:
         list: une liste des numéros de ligne de bus
     """
+    list_ = []
     for elem in elem_soup.find_all(class_="information"):
         reg = re.search(r"Bus\s?(:|n°)?\s?((\d*,?\s?)*)", elem.text)
-        list_ = []
         if reg:
             liste_bus = reg.group(2).split(",")
             for ligne in liste_bus:
@@ -175,16 +175,16 @@ def scrap(response_json):
     return list_
 
 
-def add_database():
+def add_database(mus, jar):
     """
     Fonction qui ajoute tous les elements à la database (jardins et musees municipaux)
     """
     response_musees = requests.post('https://meslieux.paris.fr/proxy/data/get/equipements/get_equipements', headers=headers_musees, params=params)
     response_jardins = requests.post('https://meslieux.paris.fr/proxy/data/get/equipements/get_equipements', headers=headers_jardins, params=params)
 
-    database.musees.insert(scrap(response_musees.json()))
-    database.jardins.insert(scrap(response_jardins.json()))
+    mus.insert_many(scrap(response_musees.json()))
+    jar.insert_many(scrap(response_jardins.json()))
 
 
-add_database()
+add_database(musees, jardins)
 
