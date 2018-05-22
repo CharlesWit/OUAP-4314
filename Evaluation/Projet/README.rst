@@ -67,7 +67,7 @@ Lancer un serveur mongodb :
 
 .. code-block:: bash
 
-    mongod -dbpath ~/data/
+    mongod -dbpath ~/data/db
 
 Dans une nouvelle fenêtre de terminal, se placer dans le dossier OUAP-4314/Evaluation/Projet, puis taper les commandes qui suivent :
 
